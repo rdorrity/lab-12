@@ -40,6 +40,7 @@
 #
 
 import re
+import sys
 
 # The location class initializes all rooms in the game world.
 # Each Location has:
@@ -175,8 +176,9 @@ cmdDrop = re.compile(("^Drop\s((\w+)(?:\s)?){1,4}$"), re.I)
 def user_input(cmmd):
     if cmdExit.search(cmmd):                        # exits game if Player inputs "exit" or "quit"
         print "Game Over. Thanks for playing!"
-        raise SystemExit
+        #raise SystemExit
         #quit()
+        sys.exit(0)
     elif cmdHelp.search(cmmd):                      # re-prints out the directions if the Player inputs "help"
         print_directions()
     elif cmdInv.search(cmmd):                       # prints out the contents of the Player's inventory
@@ -247,7 +249,7 @@ class Player:
                 item_count = item_count + 1
                 print item
         if item_count == 0:
-          print "There are no items in inventory"
+          print "There are no items in your inventory."
 
 
     # Prints description of examined item
