@@ -175,6 +175,7 @@ def user_input(cmmd):
     if cmdExit.search(cmmd):                        # exits game if Player inputs "exit" or "quit"
         print "Game Over. Thanks for playing!"
         raise SystemExit
+        #done = True
     elif cmdHelp.search(cmmd):                      # re-prints out the directions if the Player inputs "help"
         print_directions()
     elif cmdInv.search(cmmd):                       # prints out the contents of the Player's inventory
@@ -287,21 +288,26 @@ def print_directions():
  Exit game: quit/exit\n\n\
 To access this help menu at any time, type \"help\".\n"
 
+
+p = Player()
+
 # Drives the whole game
 def main():
+    #done = False
     print_welcome()
     print_directions()
     raw_input("Press Enter to continue...\n")
     print_intro()
     Location.print_description(main_room)
-    # run until exit or player dies
+    
+    #run until exit or player dies
+    
     while True:
       # prompt user for movement
-      user_input(raw_input(">>>", ))
+      user_input(raw_input(">>>", ))      
       # go to room and allow commands
-p = Player()
-main()
 
+main()
 
 
 
