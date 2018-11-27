@@ -88,12 +88,14 @@ secret_room = Location("", "", [], {})
 # A dictionary that holds all the items in the world as keys. The values are lists.
 # The 0th index of that list holds the description of the item when the Player examines the item
 # The 1st index of the list holds the reference object (a Location or Player) that possesses the item
-# The 2nd index of the list holds the description of the item that gets concatenated to the room's location
+# The 2nd index of the list holds the description of the item that gets concatenated to the room's location\
+# The 3rd index of the list is a boolean checking if the item is able to be taken by the player. If true, the item can
+# be taken by the player.
 # if it is in that room. This description turns into the empty string when a Player takes the item.
 itemTable = {
     "piece of metal": ["\nRadiates with a strange glow. Smooth to the touch.", main_room, "\nA shiny piece of\
  metal catches your eye on the west wall.", True], "chain mail": ["\nMade of interlocking metal rings, this armor will\
- cushion the impact of deadly bl.", north_room, "\nYou notice a sturdy set of chain mail in the corner.", True],
+ cushion the impact of deadly bl.", north_room, "\nYou notice a sturdy set of chain mail in the corner.", False],
  "letter": ["\nContents of letter goes here", north_room, "\nCandle light casts a glow on the table illuminating\
  a mysterious letter.", True],"key": ["\nOld and worn, but may still have use.", north_room, "\nOn the table, there is a key.", True],
  "logic board": ["\nIt has multiple strange connectors and a lot of black squares.", secret_room, "\nYou see a dusty green board on the ground.", True],
@@ -111,7 +113,7 @@ main_room.description = "Lit with a flickering torchlight, the room darkens at t
 The walls are\nCyclopean stone and painted with moss. \
 Motes of flora drift lightly and your feet\nsettle on soft grass. \
 Four doors face you in each cardinal direction." + itemTable["piece of metal"][2]
-main_room.connections = {"north": north_room, "south": south_room, \
+main_room.connections = {"north": north_room, "south": south_room,
                          "east": east_room, "west": west_room}
 
 # North Room
@@ -210,8 +212,8 @@ def user_input(cmmd):
         print "I don't know that command."
 
 # Player class
-# Used to handle everything out Player can do
-class Player():
+# Handles Player actions.
+class Player:
     def __init__(self):
         self.location = main_room  # Player starts in the main room
 
@@ -219,10 +221,13 @@ class Player():
     def take_item(self, item):
         self.location.remove_item(item)     # Removes the item from its location
         if item in itemTable:
-            itemTable[item][1] = self       # Changes the item's location value to the Player object
-            print "You took the " + item    # Prints out that the Player took the object
+            if itemTable[item][3]:              # If true, places item in player inventory
+                itemTable[item][1] = self       # Changes the item's location value to the Player object
+                print "You took the " + item    # Prints out that the Player took the object
+            else:
+                print "You cannot take that."
 
-    # move enables a Player to move to a location given a valid direction
+    # Moves Player object in a given direction, if valid.
     def move(self, direction):
         possibilities = ["north", "south", "east", "west"] # List of possible directions
         for possibility in possibilities:
@@ -234,7 +239,7 @@ class Player():
                 else:
                     print "There's nowhere to go to the " + direction   # If there's no Location in that direction,
                                                                         # prints out that there's nowhere to go that way
-    # print_inventory prints all the items in the Player's inventory
+    # Prints all items in Player's inventory
     def print_inventory(self):
         item_count = 0
         for item in itemTable:
@@ -245,7 +250,7 @@ class Player():
           print "There are no items in inventory"
 
 
-    # print the description of the item examined
+    # Prints description of examined item
     def examine_item(self, item):
         if item in itemTable and (itemTable[item][1] == self or itemTable[item][1] == self.location):
             print itemTable[item][0]  # Only print out the description if the item exists in the world
