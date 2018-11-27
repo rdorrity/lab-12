@@ -315,6 +315,7 @@ To access this help menu at any time, type \"help\".\n"
 
 # Drives the whole game.
 def main():
+    #done = False
     print_welcome()
     print_directions()
     raw_input("Press Enter to continue...\n")
@@ -327,7 +328,6 @@ def main():
       # Go to room and allow commands
 p = Player()
 main()
-
 
 
 
