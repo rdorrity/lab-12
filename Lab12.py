@@ -91,7 +91,10 @@ west_room = Location("", "", [], {})
 # if it is in that room. This description turns into the empty string when a Player takes the item.
 itemTable = {
     "piece of metal": ["\nRadiates with a strange glow. Smooth to the touch.", main_room, "\nA shiny piece of\
- metal catches your eye on the west wall."]
+ metal catches your eye on the west wall."], "chain mail": ["\nMade of interlocking metal rings, this armor will\
+ cushion the impact of deadly bl.", north_room, "\nYou notice a sturdy set of chain mail in the corner."],
+ "letter": ["\nContents of letter goes here", north_room, "\nCandle light casts a glow on the table illuminating\
+ a mysterious letter."],"key": ["\nOld and worn, but may still have use.", north_room, "\nOn the table, there is a key."]
 }
 
 # Room Initializations
@@ -109,9 +112,9 @@ main_room.connections = {"north": north_room, "south": south_room, \
 
 # North Room
 north_room.name = "North Room"
-north_room.description = "You are standing on a marble floor. Ahead of you is a grand staircase, flanked by two lamp posts.\n\
+north_room.description = "You are standing on a marble floor. Ahead of you are two lamp posts.\n\
 There is a fireplace to the left, a table to the right of you, and a statue with a grandfather clock\n\
-next to it. On the table, there is a key. There is a door to the south."
+next to it. There is a door to the south" + itemTable["chain mail"][2]+ itemTable["letter"][2]+ itemTable["key"][2]
 north_room.interactions = []
 north_room.connections = {"south": main_room}
 
@@ -227,8 +230,8 @@ class Player():
             if itemTable[item][1] == self:
                 item_count = item_count + 1
                 print item
-            if item_count == 0:
-                print "There are no items in inventory"
+        if item_count == 0:
+          print "There are no items in inventory"
 
 
     # print the description of the item examined
