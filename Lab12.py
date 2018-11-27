@@ -82,6 +82,7 @@ north_room = Location("", "", [], {})
 south_room = Location("", "", [], {})
 east_room = Location("", "", [], {})
 west_room = Location("", "", [], {})
+secret_room = Location("", "", [], {})
 
 # Items in the world
 # A dictionary that holds all the items in the world as keys. The values are lists.
@@ -91,10 +92,13 @@ west_room = Location("", "", [], {})
 # if it is in that room. This description turns into the empty string when a Player takes the item.
 itemTable = {
     "piece of metal": ["\nRadiates with a strange glow. Smooth to the touch.", main_room, "\nA shiny piece of\
- metal catches your eye on the west wall."], "chain mail": ["\nMade of interlocking metal rings, this armor will\
- cushion the impact of deadly bl.", north_room, "\nYou notice a sturdy set of chain mail in the corner."],
+ metal catches your eye on the west wall.", True], "chain mail": ["\nMade of interlocking metal rings, this armor will\
+ cushion the impact of deadly bl.", north_room, "\nYou notice a sturdy set of chain mail in the corner.", True],
  "letter": ["\nContents of letter goes here", north_room, "\nCandle light casts a glow on the table illuminating\
- a mysterious letter."],"key": ["\nOld and worn, but may still have use.", north_room, "\nOn the table, there is a key."]
+ a mysterious letter.", True],"key": ["\nOld and worn, but may still have use.", north_room, "\nOn the table, there is a key.", True],
+ "logic board": ["\nIt has multiple strange connectors and a lot of black squares.", secret_room, "\nYou see a dusty green board on the ground.", True],
+ "power crystal": ["\nA powerful glow illuminates from the crystal.", west_room, "\nA bright light shines from the chest.", True],
+ "musty book": ["\nIt has a dark hand print on the cover. You feel an evil presence.", south_room, "\nYou see an old book on a black stone lectern.", True]
 }
 
 # Room Initializations
@@ -144,6 +148,12 @@ glass. There is a door to the east."
 west_room.interactions = []
 west_room.connections = {"east": main_room}
 
+# Secret Room
+secret_room.name = "Secret Room"
+secret_room.description = "The secret room. It's all white."
+secret_room.interactions = []
+secret_room.connections = {"secret": south_room}
+
 
 
 # Handing user input
@@ -158,6 +168,7 @@ cmdHelp = re.compile(("^(Help){1}$"), re.I)
 cmdExamine = re.compile(("^Examine\s((\w+)(?:\s)?){1,4}$"), re.I)
 cmdTake = re.compile(("^Take\s((\w+)(?:\s)?){1,4}$"), re.I)
 cmdDrop = re.compile(("^Drop\s((\w+)(?:\s)?){1,4}$"), re.I)
+
 
 # user_input takes a String cmmd and determines if it matches any of our regular expressions
 # and responds accordingly
