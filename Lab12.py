@@ -155,6 +155,18 @@ secret_room.description = "You are in an all white room. Everything is perfectly
 secret_room.interactions = []
 secret_room.connections = {"secret": south_room}
 
+# Ending flavor text.
+best_ending = "The gyroscope spins up rapidly while emitting a bright blue light. You feel yourself leaving this\n\
+  place, as if you are free to fly wherever you please...\n\n\n\n\Congratulations! You Win!!"
+
+good_ending = "The gyroscope spins up rapidly while emitting a bright white light. You feel your surroundings shift\n\
+  as if everything is ready to leave. Suddenly, you feel as if your body and everything around you has jumped at great speed\n\
+  into someplace new. The next adventure is ready to begin...\n\n\n\n\Congratulations! You Win!"
+
+bad_ending = "The gyroscope spins up rapidly, but it suddenly goes black and freezes. You feel a great chill in the air,\n\
+  and the book begins to shake and emit dark red vapors. Your body begins to feel cold and weak, and you can no longer move.\n\
+  As your consciousness fades away, the last thing you hear is faint evil laughter...\n\n\n\n\YOU ARE DEAD. YOU LOSE"
+
 
 # User input parsing
 # ------------------
@@ -249,10 +261,18 @@ class Player:
         if item_count == 0:
           print "There are no items in your inventory."
 
-
     # Prints description of examined item
     def examine_item(self, item):
-        if item in itemTable and (itemTable[item][1] == self or itemTable[item][1] == self.location):
+        # Checks for "best" win condition - player has logic board and examines gyroscope
+        if item in itemTable and (itemTable["logic board"] == self or itemTable["logic board"] == self.location):
+            print best_ending
+        # Checks for "good" win condition - player has power crystal and examines gyroscope
+        elif item in itemTable and (itemTable["power crystal"] == self or itemTable["power crystal"] == self.location):
+            print best_ending
+        # Checks for "bad" win condition - player has musty book and examines gyroscope
+        elif item in itemTable and (itemTable["musty book"] == self or itemTable["musty book"] == self.location):
+            print bad_ending
+        elif item in itemTable and (itemTable[item][1] == self or itemTable[item][1] == self.location):
             print itemTable[item][0]  # Only print out the description if the item exists in the world
                                       # and is located on the Player or in the Player's location
         else:
