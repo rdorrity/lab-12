@@ -4,10 +4,10 @@
 # 11/26/2018
 # ###########################################################
 
-# Welcome to Stargate: SCSI-1! a text-based adventure
+# Welcome to Stargate: SCSI-1! A Text Based Adventure
 
 
-# Game map:
+# Game Map:
 #
 #                     --------------------
 #                    |                    |
@@ -40,8 +40,9 @@
 #
 
 import re
+import sys
 
-# The Location class is used to initialize all of our rooms
+# The location class initializes all rooms in the game world.
 # Each Location has:
 # String: name (prints when you visit a room)
 # String: description (prints the first time you visit a room or of you "look" at a room).
@@ -75,7 +76,7 @@ class Location:
 
 
 # Room Definitions
-# Rooms are created ahead of time with dummy empty values because we need to refer to these objects in their
+# Rooms are created ahead of time with empty values because we need to refer to these objects in their
 # connections dictionary.
 main_room = Location("", "", [], {})
 north_room = Location("", "", [], {})
@@ -84,14 +85,13 @@ east_room = Location("", "", [], {})
 west_room = Location("", "", [], {})
 secret_room = Location("", "", [], {})
 
-# Items in the world
+# World Items
 # A dictionary that holds all the items in the world as keys. The values are lists.
 # The 0th index of that list holds the description of the item when the Player examines the item
 # The 1st index of the list holds the reference object (a Location or Player) that possesses the item
 # The 2nd index of the list holds the description of the item that gets concatenated to the room's location\
-# The 3rd index of the list is a boolean checking if the item is able to be taken by the player. If true, the item can
-# be taken by the player.
-# if it is in that room. This description turns into the empty string when a Player takes the item.
+# The 3rd index of the list is a boolean checking if an item at a location is retrievable by the player, if true.
+# This description turns into the empty string when a player takes the item.
 itemTable = {
     "piece of metal": ["\nRadiates with a strange glow. Smooth to the touch.", main_room, "\nA shiny piece of\
  metal catches your eye on the west wall.", True], "chain mail": ["\nMade of interlocking metal rings, this armor will\
@@ -104,7 +104,6 @@ itemTable = {
 }
 
 # Room Initializations
-# Now we can assign the instance variables with our real values without breaking the code.
 
 # Main Room
 main_room.name = "Main Room"
@@ -156,11 +155,24 @@ secret_room.description = "You are in an all white room. Everything is perfectly
 secret_room.interactions = []
 secret_room.connections = {"secret": south_room}
 
+# Ending flavor text.
+best_ending = "The gyroscope spins up rapidly while emitting a bright blue light. You feel yourself leaving this\n\
+  place, as if you are free to fly wherever you please...\n\n\n\n\Congratulations! You Win!!"
 
-# Handing user input
-# We use regular expressions to find matches for valid commands
-# These are called in our user_input function to determine
-# What the appropriate response should be
+good_ending = "The gyroscope spins up rapidly while emitting a bright white light. You feel your surroundings shift\n\
+  as if everything is ready to leave. Suddenly, you feel as if your body and everything around you has jumped at great speed\n\
+  into someplace new. The next adventure is ready to begin...\n\n\n\n\Congratulations! You Win!"
+
+bad_ending = "The gyroscope spins up rapidly, but it suddenly goes black and freezes. You feel a great chill in the air,\n\
+  and the book begins to shake and emit dark red vapors. Your body begins to feel cold and weak, and you can no longer move.\n\
+  As your consciousness fades away, the last thing you hear is faint evil laughter...\n\n\n\n\YOU ARE DEAD. YOU LOSE"
+
+
+# User input parsing
+# ------------------
+# We use regular expressions to find matches for valid commands.
+# These are called in our user_input function to determine what the appropriate response should be.
+
 cmdMove = re.compile(("^(north|n|south|s|west|w|east|e|up|down){1}$"), re.I)
 cmdExit = re.compile(("^(Quit|Exit){1}$"), re.I)
 cmdInv = re.compile("^(Inventory){1}$", re.I)
@@ -171,12 +183,12 @@ cmdTake = re.compile(("^Take\s((\w+)(?:\s)?){1,4}$"), re.I)
 cmdDrop = re.compile(("^Drop\s((\w+)(?:\s)?){1,4}$"), re.I)
 
 
-# user_input takes a String cmmd and determines if it matches any of our regular expressions
-# and responds accordingly
+# Takes a String cmd and determines if it matches any regular expressions
+# and responds accordingly.
 def user_input(cmmd):
     if cmdExit.search(cmmd):                        # exits game if Player inputs "exit" or "quit"
         print "Game Over. Thanks for playing!"
-        raise SystemExit
+        return
     elif cmdHelp.search(cmmd):                      # re-prints out the directions if the Player inputs "help"
         print_directions()
     elif cmdInv.search(cmmd):                       # prints out the contents of the Player's inventory
@@ -222,7 +234,7 @@ class Player:
         if item in itemTable:
             if itemTable[item][3]:              # If true, places item in player inventory
                 itemTable[item][1] = self       # Changes the item's location value to the Player object
-                print "You took the " + item    # Prints out that the Player took the object
+                print "You took the " + item + '.'  # Prints out that the Player took the object
             else:
                 print "You cannot take that."
 
@@ -236,22 +248,31 @@ class Player:
                     self.location = self.location.connections[possibility]  # Changes the Player's location to where they
                     self.location.print_description()                       # just moved and prints the description.
                 else:
-                    print "There's nowhere to go to the " + direction   # If there's no Location in that direction,
-                                                                        # prints out that there's nowhere to go that way
+                    print "There's nowhere to go in that direction."
+
     # Prints all items in Player's inventory
     def print_inventory(self):
         item_count = 0
+
         for item in itemTable:
             if itemTable[item][1] == self:
                 item_count = item_count + 1
                 print item
         if item_count == 0:
-          print "There are no items in inventory"
-
+          print "There are no items in your inventory."
 
     # Prints description of examined item
     def examine_item(self, item):
-        if item in itemTable and (itemTable[item][1] == self or itemTable[item][1] == self.location):
+        # Checks for "best" win condition - player has logic board and examines gyroscope
+        if item in itemTable and (itemTable["logic board"] == self or itemTable["logic board"] == self.location):
+            print best_ending
+        # Checks for "good" win condition - player has power crystal and examines gyroscope
+        elif item in itemTable and (itemTable["power crystal"] == self or itemTable["power crystal"] == self.location):
+            print best_ending
+        # Checks for "bad" win condition - player has musty book and examines gyroscope
+        elif item in itemTable and (itemTable["musty book"] == self or itemTable["musty book"] == self.location):
+            print bad_ending
+        elif item in itemTable and (itemTable[item][1] == self or itemTable[item][1] == self.location):
             print itemTable[item][0]  # Only print out the description if the item exists in the world
                                       # and is located on the Player or in the Player's location
         else:
@@ -259,14 +280,14 @@ class Player:
                                       # Otherwise, notify the Player that there is no item to examine.
 
 
-# Print the introduction just once at the start of the game
+# Prints introduction text once at start of game.
 def print_intro():
     print "Your body aches. There is flowing water, somewhere, but you cannot tell where.\n\
 Rolling over, blades of grass tickle your skin and the smell of ash brings\n\
 burning tears. As you wipe your eyes, the surrounding structure comes into focus.\n\
 You look around and discover you are in the ... "
 
-# Print welcome on game start
+# Prints welcome message on game start.
 def print_welcome():
     print "\t\t---------------------------------------------------------------\n"
     print "\t\t\t\t\t\tWelcome to Stargate: SCSI-1!\n\n\
@@ -275,7 +296,7 @@ def print_welcome():
     \tCommands are not case sensitive.\n"
     print "\t\t---------------------------------------------------------------"
 
-# Print game directions once after the welcome and any time the Player types help
+# Print game directions initially after game start, and displays help menu during any time of the game.
 def print_directions():
 
  print "\n\n _Movement_\n\
@@ -292,10 +313,7 @@ def print_directions():
  Exit game: quit/exit\n\n\
 To access this help menu at any time, type \"help\".\n"
 
-
-p = Player()
-
-# Drives the whole game
+# Drives the whole game.
 def main():
     #done = False
     print_welcome()
@@ -303,14 +321,12 @@ def main():
     raw_input("Press Enter to continue...\n")
     print_intro()
     Location.print_description(main_room)
-    
-    #run until exit or player dies
-    
+    # Run until exit or player dies
     while True:
-      # prompt user for movement
-      user_input(raw_input(">>>", ))      
-      # go to room and allow commands
-
+      # Prompt user for movement
+      user_input(raw_input(">>>", ))
+      # Go to room and allow commands
+p = Player()
 main()
 
 
