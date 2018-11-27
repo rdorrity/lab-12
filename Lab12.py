@@ -176,9 +176,7 @@ cmdDrop = re.compile(("^Drop\s((\w+)(?:\s)?){1,4}$"), re.I)
 def user_input(cmmd):
     if cmdExit.search(cmmd):                        # exits game if Player inputs "exit" or "quit"
         print "Game Over. Thanks for playing!"
-        #raise SystemExit
-        #quit()
-        sys.exit(0)
+        return
     elif cmdHelp.search(cmmd):                      # re-prints out the directions if the Player inputs "help"
         print_directions()
     elif cmdInv.search(cmmd):                       # prints out the contents of the Player's inventory
@@ -295,7 +293,7 @@ def print_directions():
  Exit game: quit/exit\n\n\
 To access this help menu at any time, type \"help\".\n"
 
-# Drives the whole game
+# Drives the whole game.
 def main():
     print_welcome()
     print_directions()
