@@ -150,10 +150,9 @@ west_room.connections = {"east": main_room}
 
 # Secret Room
 secret_room.name = "Secret Room"
-secret_room.description = "The secret room. It's all white."
+secret_room.description = "You are in an all white room. Everything is perfectly lit, and it is eerily quiet."
 secret_room.interactions = []
 secret_room.connections = {"secret": south_room}
-
 
 
 # Handing user input
@@ -168,6 +167,7 @@ cmdHelp = re.compile(("^(Help){1}$"), re.I)
 cmdExamine = re.compile(("^Examine\s((\w+)(?:\s)?){1,4}$"), re.I)
 cmdTake = re.compile(("^Take\s((\w+)(?:\s)?){1,4}$"), re.I)
 cmdDrop = re.compile(("^Drop\s((\w+)(?:\s)?){1,4}$"), re.I)
+
 
 # user_input takes a String cmmd and determines if it matches any of our regular expressions
 # and responds accordingly
