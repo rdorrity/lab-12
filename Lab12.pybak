@@ -211,7 +211,7 @@ def user_input(cmmd):
 
 # Player class
 # Used to handle everything out Player can do
-class Player():
+class Player:
     def __init__(self):
         self.location = main_room  # Player starts in the main room
 
