@@ -196,40 +196,49 @@ def user_input(cmmd):
     else:
         print "I don't know that command."
 
-
+# Player class
+# Used to handle everything out Player can do
 class Player():
     def __init__(self):
-        self.location = main_room
+        self.location = main_room  # Player starts in the main room
 
+    # take_item enables a Player to take an item from a Location
     def take_item(self, item):
-        self.location.remove_item(item)
+        self.location.remove_item(item)     # Removes the item from its location
         if item in itemTable:
-            itemTable[item][1] = self
-            print "You took the " + item
+            itemTable[item][1] = self       # Changes the item's location value to the Player object
+            print "You took the " + item    # Prints out that the Player took the object
 
+    # move enables a Player to move to a location given a valid direction
     def move(self, direction):
-        possibilities = ["north", "south", "east", "west", "up", "down"]
+        possibilities = ["north", "south", "east", "west"] # List of possible directions
         for possibility in possibilities:
-            if direction == possibility[0] or direction == possibility:
-                if possibility in self.location.connections:
-                    self.location.visited = True
-                    self.location = self.location.connections[possibility]
-                    self.location.print_description()
+            if direction == possibility[0] or direction == possibility: # Checks to see if there is a Location to
+                if possibility in self.location.connections:            # move to in that direction
+                    self.location.visited = True                        # Marks where the Player just was as visited
+                    self.location = self.location.connections[possibility]  # Changes the Player's location to where they
+                    self.location.print_description()                       # just moved and prints the description.
                 else:
-                    print "There's nowhere to go to the " + direction
-
+                    print "There's nowhere to go to the " + direction   # If there's no Location in that direction,
+                                                                        # prints out that there's nowhere to go that way
+    # print_inventory prints all the items in the Player's inventory
     def print_inventory(self):
+        item_count = 0
         for item in itemTable:
             if itemTable[item][1] == self:
+                item_count = item_count + 1
                 print item
+            if item_count == 0:
+                print "There are no items in inventory"
 
-
+# Print the introduction just once at the start of the game
 def print_intro():
     print "Your body aches. There is flowing water, somewhere, but you cannot tell where.\n\
 Rolling over, blades of grass tickle your skin and the smell of ash brings\n\
 burning tears. As you wipe your eyes, the surrounding structure comes into focus.\n\
 You look around and discover you are in the ... "
 
+# Print welcome on game start
 def print_welcome():
     print "\t\t---------------------------------------------------------------\n"
     print "\t\t\t\t\t\tWelcome to Stargate: SCSI-1!\n\n\
@@ -238,6 +247,7 @@ def print_welcome():
     \tCommands are not case sensitive.\n"
     print "\t\t---------------------------------------------------------------"
 
+# Print game directions once after the welcome and any time the Player types help
 def print_directions():
 
  print "\n\n _Movement_\n\
@@ -254,7 +264,7 @@ def print_directions():
  Exit game: quit/exit\n\n\
 To access this help menu at any time, type \"help\".\n"
 
-
+# Drives the whole game
 def main():
     print_welcome()
     print_directions()
