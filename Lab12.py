@@ -143,8 +143,6 @@ west_room.connections = {"east": main_room}
 
 
 
-
-
 # Handing user input
 # We use regular expressions to find matches for valid commands
 # These are called in our user_input function to determine
@@ -172,7 +170,8 @@ def user_input(cmmd):
         print p.location.description                # when Player inputs "look"
     elif cmdExamine.search(cmmd):                   # prints out item's description if the Player types examine
         examine = cmdExamine.search(cmmd)
-        examine = re.sub("examine ", "", examine.group(), 1) # need to fix
+        examine = re.sub("examine ", "", examine.group(), 1)
+        Player.examine_item(p, examine)
         # Examine function call would go here <--
         # if examine in (player inv) or examine in (room inv):
         # Print out that object description
@@ -230,6 +229,17 @@ class Player():
                 print item
             if item_count == 0:
                 print "There are no items in inventory"
+
+
+    # print the description of the item examined
+    def examine_item(self, item):
+        if item in itemTable and (itemTable[item][1] == self or itemTable[item][1] == self.location):
+            print itemTable[item][0]  # Only print out the description if the item exists in the world
+                                      # and is located on the Player or in the Player's location
+        else:
+            print "There is no " + item + " to examine."
+                                      # Otherwise, notify the Player that there is no item to examine.
+
 
 # Print the introduction just once at the start of the game
 def print_intro():
