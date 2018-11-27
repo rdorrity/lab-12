@@ -150,10 +150,9 @@ west_room.connections = {"east": main_room}
 
 # Secret Room
 secret_room.name = "Secret Room"
-secret_room.description = "The secret room. It's all white."
+secret_room.description = "You are in an all white room. Everything is perfectly lit, and it is eerily quiet."
 secret_room.interactions = []
 secret_room.connections = {"secret": south_room}
-
 
 
 # Handing user input
