@@ -40,7 +40,6 @@
 #
 
 import re
-import sys
 
 # The location class initializes all rooms in the game world.
 # Each Location has:
@@ -93,14 +92,26 @@ secret_room = Location("", "", [], {})
 # The 3rd index of the list is a boolean checking if an item at a location is retrievable by the player, if true.
 # This description turns into the empty string when a player takes the item.
 itemTable = {
-    "piece of metal": ["\nRadiates with a strange glow. Smooth to the touch.", main_room, "\nA shiny piece of\
- metal catches your eye on the west wall.", True], "chain mail": ["\nMade of interlocking metal rings, this armor will\
- cushion the impact of deadly bl.", north_room, "\nYou notice a sturdy set of chain mail in the corner.", False],
- "letter": ["\nContents of letter goes here", north_room, "\nCandle light casts a glow on the table illuminating\
- a mysterious letter.", True],"key": ["\nOld and worn, but may still have use.", north_room, "\nOn the table, there is a key.", True],
- "logic board": ["\nIt has multiple strange connectors and a lot of black squares.", secret_room, "\nYou see a dusty green board on the ground.", True],
- "power crystal": ["\nA powerful glow illuminates from the crystal.", west_room, "\nA bright light shines from the chest.", True],
- "musty book": ["\nIt has a dark hand print on the cover. You feel an evil presence.", south_room, "\nYou see an old book on a black stone lectern.", True]
+ "letter": ["\n\tMy brave Elana,\n\nI need you to find this. I need you to know before I'm gone.\n\n\
+ My ambition was fueled only by my love for you. I had to have more time.\n\
+ More time to traverse the Celestial Ocean you love so much.\n\
+ The irony of my fate is not lost on me.\n\
+ I hope you will forgive my foolishness and know that,\n\
+ no matter where...or when I may be, my love for you will be there.\n\n\
+ Do not follow. Your existence belongs in the stars.\n\n\
+ For all eternity,\n\n\
+ \t-Trelle", east_room, "\nA letter, crumbled and scribbled, lies to the side.", True],
+ "key": ["\nThe rust appears light, but scrapes on the surface appear deep.\n", north_room, "\nA rusted key sits on a side table.", True],
+ "logic board": ["\nSpeckled with strange connectors and black squares.\n", secret_room, "\nYou see a dusty green board on the ground.", True],
+ "necklace": ["\nStaring into the pendant, your sense of time dissolves.\n", east_room, "\nIn the center of the table rests a silver necklace, its pendant pure crystal.", True],
+ "book": ["\nThe black hand print on the cover pulls at your thoughts with hunger.\n", south_room, "\nThere is a tattered book on a lectern.", True],
+ "chair" : ["This space purposely left empty.", north_room, "\nBy the fire, a chair sits with a surprising allure.", False],
+ "tablet" : ["\nBlack as the void, the stone feels moist in your grip.\nThere are electrical connectors on one side.\n", None, "This space purposely left empty.", True],
+ "gyroscope" : ["\nSilver metal with brass filigree.\
+ \nA panel shows slots for multiple instruments.\
+ \nTwo are empty. One looks rough and angular.\
+ \nThe other has straight edges and places for connectors.\n", west_room, "This space purposely left empty.", False],
+ "socket" : ["\nPeering inside the socket, you see metallic pins.", south_room, "This space purposely left empty.", False]
 }
 
 # Room Initializations
@@ -111,62 +122,85 @@ main_room.interactions = []
 main_room.description = "Lit with a flickering torchlight, the room darkens at the corners. \
 The walls are\nCyclopean stone and painted with moss. \
 Motes of flora drift lightly and your feet\nsettle on soft grass. \
-Four doors face you in each cardinal direction." + itemTable["piece of metal"][2]
+Four doors face you in each cardinal direction.\n"
 main_room.connections = {"north": north_room, "south": south_room,
                          "east": east_room, "west": west_room}
 
 # North Room
 north_room.name = "North Room"
-north_room.description = "You are standing on a marble floor. Ahead of you are two lamp posts.\n\
-There is a fireplace to the left, a table to the right of you, and a statue with a grandfather clock\n\
-next to it. There is a door to the south" + itemTable["chain mail"][2]+ itemTable["letter"][2]+ itemTable["key"][2]
+north_room.description = "The warmth of the room sends shivers down your back,\n\
+like settling into a warm bath in winter.\n\
+A fireplace burns to the side, inviting and bright,\n\
+while a grandfather clock creates meditative ticking from a corner." + itemTable["key"][2] + itemTable["chair"][2] + "\nThe only door is to the south.\n"
 north_room.interactions = []
 north_room.connections = {"south": main_room}
 
 # South Room
 south_room.name = "South Room"
-south_room.description = "There is a staircase leading downstairs, with a portrait on the wall. You can faintly hear\n\
-flowing water coming from the stairwell. There is a door to the north."
+south_room.description = "The grass from the prior room gives way to soil.\n\
+A small spring begins near the north and disappears into the far stone wall.\n\
+Worn tables are covered with failed inventions and stagnate chemical devices.\n\
+A rough mosaic colors one wall, forming the shapes of two women sailing through a strange sea.\n\
+Amongst the waves you discover a small socket." + itemTable["book"][2] + "\nThere's a door to the north.\n"
 south_room.interactions = []
 south_room.connections = {"north": main_room}
 
 # East Room
 east_room.name = "East Room"
-east_room.description = "You are standing on a stone floor. Flanking you on both sides are rows of portraits of various\n\
-people who look unfamiliar. Each portrait is surrounded by two unlit torches. There is a chandelier\n\
-hanging from the ceiling, and various wooden cabinets around the room. In the corner, there is an\n\
-empty stone fountain."
+east_room.description = "Stepping onto a stone floor, you strain to see in the dim light.\n\
+Rows of portraits line the walls, depicting strange, archaic scenes of battle.\n\
+The air is spiced with a sweet perfume that pulls you inward and you fail to resist.\n\
+You collide with a stone table that breaks the hold on your mind." + itemTable["letter"][2] + itemTable["necklace"][2] + "\nA doorway is to the west.\n"
 east_room.interactions = []
 east_room.connections = {"west": main_room}
 
 # West Room
 west_room.name = "West Room"
-west_room.description = "You are standing on a wood floor. There is a large, round gyroscope-like structure in the middle,\n\
-rotating slowly. Around you are shelves filled with old books, and there are several pieces of old\n\
-parchment scattered on the floor. The script on the pieces of parchment is faded, and you can barely\n\
-read it. In the corner, there is a chest in an alcove sitting on a velvet pillow, covered by\n\
-glass. There is a door to the east."
+west_room.description = "Built-in shelves cover three of the walls,\n\
+housing books and strange scientific instruments.\n\
+Pages are scattered on the polished wood floor, the written words no longer legible.\n\
+The far wall is made entirely of glass and an endless night sky rests on the other side.\n\
+In the center of the room is a large device, a gyroscope, rotating slow and steady.\n"
 west_room.interactions = []
 west_room.connections = {"east": main_room}
 
 # Secret Room
 secret_room.name = "Secret Room"
-secret_room.description = "You are in an all white room. Everything is perfectly lit, and it is eerily quiet."
+secret_room.description = "Descending stone steps, you enter a chamber of white stone.\n\
+Every surface is smooth and cold to the touch.\n\
+The stream from above falls and clings to one wall, but there is no sound.\n\
+Your footsteps are silent, and shouting creates no sound.\n\
+The doorway you entered from is gone, but you notice a dusty green board beneath your feet.\n\
+It resembles a logic board.\n"
 secret_room.interactions = []
-secret_room.connections = {"secret": south_room}
+secret_room.connections = {}
 
-# Ending flavor text.
-best_ending = "The gyroscope spins up rapidly while emitting a bright blue light. You feel yourself leaving this\n\
-  place, as if you are free to fly wherever you please...\n\n\n\n\Congratulations! You Win!!"
+badEnding = "\nPlacing the pendant and tablet into the panel, you begin to feel vibrations deep below.\n\
+The gyroscope activates, its gimbals increasing in speed as the crystal pendant illuminates.\n\
+You feel a sharp pain in your chest, like a tug on your heart. The room dissolves around you into black.\n\
+As the pain intensifies, a menacing laugh echoes in the dark. A voice thunders in your mind.\n\
+\"One last failure to savor. How I will miss your arrogant attempts to traverse the forbidden.\"\n\
+...\n\
+Your body aches. The pain is unbearable.\n\
+Rolling over, blades of grass tickle your skin.\n\
+The taste of blood fills your mouth and breathing becomes difficult.\n\
+You find yourself whispering, \"I'm sorry...\" as your breaths become shorter.\n\
+Slowly, everything grows dark.\n\
+\n\
+You achieved the Bad Ending!\n\
+Thank you for playing!\n"
 
-good_ending = "The gyroscope spins up rapidly while emitting a bright white light. You feel your surroundings shift\n\
-  as if everything is ready to leave. Suddenly, you feel as if your body and everything around you has jumped at great speed\n\
-  into someplace new. The next adventure is ready to begin...\n\n\n\n\Congratulations! You Win!"
-
-bad_ending = "The gyroscope spins up rapidly, but it suddenly goes black and freezes. You feel a great chill in the air,\n\
-  and the book begins to shake and emit dark red vapors. Your body begins to feel cold and weak, and you can no longer move.\n\
-  As your consciousness fades away, the last thing you hear is faint evil laughter...\n\n\n\n\YOU ARE DEAD. YOU LOSE"
-
+goodEnding = "\nPlacing the pendant and logic board into the panel, you begin to feel vibrations deep below.\n\
+The gyroscope activates, its gimbals increasing in speed as the crystal pendant illuminates.\n\
+You feel a sharp pain in your chest, like a tug on your heart. The room dissolves around you into black.\n\
+As the pain intensifies, a menacing roar can be heard from all around you.\n\
+Then it stops.\n\
+You are in a shabby garden. A young woman rises from her work, holding a flower that glows like the sun.\n\
+She drops it upon seeing you. \"Trelle!\"\n\
+You let out a sigh. \"Elana...\"\n\
+\n\
+You achieved the Good Ending!\n\
+Thank you for playing!\n"
 
 # User input parsing
 # ------------------
@@ -180,47 +214,32 @@ cmdLook = re.compile(("^(Scan|Look){1}$"), re.I)
 cmdHelp = re.compile(("^(Help){1}$"), re.I)
 cmdExamine = re.compile(("^Examine\s((\w+)(?:\s)?){1,4}$"), re.I)
 cmdTake = re.compile(("^Take\s((\w+)(?:\s)?){1,4}$"), re.I)
-cmdDrop = re.compile(("^Drop\s((\w+)(?:\s)?){1,4}$"), re.I)
-
 
 # Takes a String cmd and determines if it matches any regular expressions
 # and responds accordingly.
 def user_input(cmmd):
     if cmdExit.search(cmmd):                        # exits game if Player inputs "exit" or "quit"
-        print "Game Over. Thanks for playing!"
-        return
+        game_exit()
     elif cmdHelp.search(cmmd):                      # re-prints out the directions if the Player inputs "help"
         print_directions()
     elif cmdInv.search(cmmd):                       # prints out the contents of the Player's inventory
-        p.print_inventory()                         # to do: Print out "nothing in inventory" if empty
+        p.print_inventory()
     elif cmdLook.search(cmmd):                      # prints out the description of the Player's Location
-        print p.location.description                # when Player inputs "look"
-    elif cmdExamine.search(cmmd):                   # prints out item's description if the Player types examine
+		print("\n\t~~" + p.location.name + "~~\n")
+		print p.location.description                # when Player inputs "look"
+    elif cmdExamine.search(cmmd):                   # prints out item's description if the Player types "examine"
         examine = cmdExamine.search(cmmd)
         examine = re.sub("examine ", "", examine.group(), 1)
         Player.examine_item(p, examine)
-        # Examine function call would go here <--
-        # if examine in (player inv) or examine in (room inv):
-        # Print out that object description
-        # else:
-        # Print that player can't do that
-    elif cmdTake.search(cmmd):
+    elif cmdTake.search(cmmd):                      # Allows player to take an item if Player types "take"
         take = cmdTake.search(cmmd)
         take = re.sub("take ", "", take.group(), 1)
         p.take_item(take)
-    elif cmdDrop.search(cmmd):
-        dropped = cmdDrop.search(cmmd)
-        dropped = re.sub("drop ", "", dropped.group(), 1)
-        # Dropped function call would go here <--
-        # If in player's inv:
-        # Remove from player's inv and add to room inv
-        # Else:
-        # Tell player it failed
-    elif cmdMove.search(cmmd):
+    elif cmdMove.search(cmmd):                      # Allows Player to move a given direction
         move = cmdMove.search(cmmd).group(0)
         Player.move(p, move)
     else:
-        print "I don't know that command."
+        print "I don't know that command."          # Prints if nothing matches our REs
 
 # Player class
 # Handles Player actions.
@@ -228,15 +247,26 @@ class Player:
     def __init__(self):
         self.location = main_room  # Player starts in the main room
 
-    # take_item enables a Player to take an item from a Location
+    # take_item enables a Player to take an item from a Location as long as it exists in the world
+    # and is takeable. Certain special items have special events.
     def take_item(self, item):
-        self.location.remove_item(item)     # Removes the item from its location
-        if item in itemTable:
-            if itemTable[item][3]:              # If true, places item in player inventory
-                itemTable[item][1] = self       # Changes the item's location value to the Player object
-                print "You took the " + item + '.'  # Prints out that the Player took the object
+        if item not in itemTable:
+            print "I don't recognize that item."
+        else:
+            if itemTable[item][3]:  # If true, places item in player inventory
+                self.location.remove_item(item)           # Removes the item from its location
+                itemTable[item][1] = self                 # Changes the item's location value to the Player object
+                print "\nYou take the " + item + '.\n'    # Prints out that the Player took the object
+                # Handles special events if player takes specific items.
+                if item == "logic board" and self.location == secret_room:
+                    print "A loud, sharp pop rings through your skull. You find yourself back in the main room.\n"
+                    self.location = main_room
+                if item == "book" and self.location == south_room:
+                    print "You sense that your bag is heavier than before.\n"
+                    itemTable["tablet"][1] = self
             else:
-                print "You cannot take that."
+                print "\nYou cannot take the " + item + ".\n"  # If item is not takeable, tell the Player
+
 
     # Moves Player object in a given direction, if valid.
     def move(self, direction):
@@ -253,7 +283,6 @@ class Player:
     # Prints all items in Player's inventory
     def print_inventory(self):
         item_count = 0
-
         for item in itemTable:
             if itemTable[item][1] == self:
                 item_count = item_count + 1
@@ -263,22 +292,47 @@ class Player:
 
     # Prints description of examined item
     def examine_item(self, item):
-        # Checks for "best" win condition - player has logic board and examines gyroscope
-        if item in itemTable and (itemTable["logic board"] == self or itemTable["logic board"] == self.location):
-            print best_ending
-        # Checks for "good" win condition - player has power crystal and examines gyroscope
-        elif item in itemTable and (itemTable["power crystal"] == self or itemTable["power crystal"] == self.location):
-            print best_ending
-        # Checks for "bad" win condition - player has musty book and examines gyroscope
-        elif item in itemTable and (itemTable["musty book"] == self or itemTable["musty book"] == self.location):
-            print bad_ending
-        elif item in itemTable and (itemTable[item][1] == self or itemTable[item][1] == self.location):
-            print itemTable[item][0]  # Only print out the description if the item exists in the world
+		if item == "socket" and itemTable["key"][1] == self:
+			itemTable["key"][1] = None
+			print "\nThe key scrapes stone but turns with a click.\
+			\nA piece of the wall descends into the ground, revealing steps.\
+			\nYou descend downward.\n"
+			self.location = secret_room
+			self.location.print_description()
+		elif item == "gyroscope" and self.location == west_room:
+			if itemTable["necklace"][1] == self and itemTable["tablet"][1] == self:
+				print badEnding  # lose condition/bad ending
+				raise SystemExit
+			elif itemTable["necklace"][1] == self and itemTable["logic board"][1] == self:  # win condition
+				print goodEnding
+				raise SystemExit
+			else:
+				print itemTable[item][0]
+		elif item == "chair" and self.location == north_room:
+			the_chair()
+		elif item in itemTable and (itemTable[item][1] == self or itemTable[item][1] == self.location):
+			print itemTable[item][0]  # Only print out the description if the item exists in the world
                                       # and is located on the Player or in the Player's location
-        else:
-            print "There is no " + item + " to examine."
+		else:
+			print "There is no " + item + " to examine."
                                       # Otherwise, notify the Player that there is no item to examine.
 
+def the_chair():
+	print "\nConcentrating on the chair, you notice a hum.\
+	\nThe sound seems to be coming from the chair itself.\
+	\nListening intently, the sound could almost be...a voice.\n"
+	choice = raw_input("Say something to the chair? (Y/N): ",)
+	if choice.lower() == "y":   # lose condition
+		print "\nObviously mad from your experience in this realm,\
+		\nyou embrace insanity and address the chair.\
+		\nThe conversation is better than you could have hoped for.\
+		\nUnfortunately, it is much too good to pull yourself away for sustenance.\
+		\nYou starve to death."
+		game_exit()
+	else:
+		print "\nYou shake off your momentary loss with reality and\n\
+		find that the chair is in fact only a chair.\n"
+		return
 
 # Prints introduction text once at start of game.
 def print_intro():
@@ -306,12 +360,15 @@ def print_directions():
  Move east: e/east\n\n\
  _Player Actions_\n\
  Check inventory: inventory\n\
- Take item: take\n\
- Drop item: drop\n\
+ Take item: take [item]\n\
  Look around: look/scan\n\
- Examine item/room: examine\n\
+ Examine object: examine [object]\n\
  Exit game: quit/exit\n\n\
 To access this help menu at any time, type \"help\".\n"
+
+def game_exit():
+    print "\nGame over. Thanks for playing!"
+    raise SystemExit
 
 # Drives the whole game.
 def main():
