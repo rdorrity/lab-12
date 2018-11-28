@@ -8,7 +8,7 @@
 
 # To win, go to the north room and take the key
 # go back south to the main room
-# go south an examine the socket and you will
+# go south and examine the socket and you will
 # enter the secret room!
 # In the secret room, take the logic board
 # You will wind up back in the main room
