@@ -242,8 +242,8 @@ def user_input(cmmd):
     elif cmdInv.search(cmmd):                       # prints out the contents of the Player's inventory
         p.print_inventory()
     elif cmdLook.search(cmmd):                      # prints out the description of the Player's Location
-		print("\n\t~~" + p.location.name + "~~\n")
-		print p.location.description                # when Player inputs "look"
+      print("\n\t~~" + p.location.name + "~~\n")
+      print p.location.description                # when Player inputs "look"
     elif cmdExamine.search(cmmd):                   # prints out item's description if the Player types "examine"
         examine = cmdExamine.search(cmmd)
         examine = re.sub("examine ", "", examine.group(), 1)
@@ -309,30 +309,30 @@ class Player:
 
     # Prints description of examined item
     def examine_item(self, item):
-		if item == "socket" and itemTable["key"][1] == self:
-			itemTable["key"][1] = None
-			print "\nThe key scrapes stone but turns with a click.\
-			\nA piece of the wall descends into the ground, revealing steps.\
-			\nYou descend downward.\n"
-			self.location = secret_room
-			self.location.print_description()
-		elif item == "gyroscope" and self.location == west_room:
-			if itemTable["necklace"][1] == self and itemTable["tablet"][1] == self:
-				print badEnding  # lose condition/bad ending
-				raise SystemExit
-			elif itemTable["necklace"][1] == self and itemTable["logic board"][1] == self:  # win condition
-				print goodEnding
-				raise SystemExit
-			else:
-				print itemTable[item][0]
-		elif item == "chair" and self.location == north_room:
-			the_chair()
-		elif item in itemTable and (itemTable[item][1] == self or itemTable[item][1] == self.location):
-			print itemTable[item][0]  # Only print out the description if the item exists in the world
-                                      # and is located on the Player or in the Player's location
-		else:
-			print "There is no " + item + " to examine."
-                                      # Otherwise, notify the Player that there is no item to examine.
+      if item == "socket" and itemTable["key"][1] == self:
+        itemTable["key"][1] = None
+        print "\nThe key scrapes stone but turns with a click.\
+        \nA piece of the wall descends into the ground, revealing steps.\
+        \nYou descend downward.\n"
+        self.location = secret_room
+        self.location.print_description()
+      elif item == "gyroscope" and self.location == west_room:
+        if itemTable["necklace"][1] == self and itemTable["tablet"][1] == self:
+          print badEnding  # lose condition/bad ending
+          raise SystemExit
+        elif itemTable["necklace"][1] == self and itemTable["logic board"][1] == self:  # win condition
+          print goodEnding
+          raise SystemExit
+        else:
+          print itemTable[item][0]
+      elif item == "chair" and self.location == north_room:
+        the_chair()
+      elif item in itemTable and (itemTable[item][1] == self or itemTable[item][1] == self.location):
+        print itemTable[item][0]  # Only print out the description if the item exists in the world
+                                  # and is located on the Player or in the Player's location
+      else:
+        print "There is no " + item + " to examine."
+        # Otherwise, notify the Player that there is no item to examine.
 
 # A special chair that could make you go nutty
 def the_chair():
