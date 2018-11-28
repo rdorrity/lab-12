@@ -6,6 +6,26 @@
 
 # Welcome to Stargate: SCSI-1! A Text Based Adventure
 
+# To win, go to the north room and take the key
+# go back south to the main room
+# go south an examine the socket and you will
+# enter the secret room!
+# In the secret room, take the logic board
+# You will wind up back in the main room
+# Go east and take the necklace
+# Head back west to the main room
+# Go west to the west room
+# Examine the gyroscope to win!
+
+# To LOSE, do everything above, except you will also
+# take the book in the in the east room, which adds
+# a "tablet" to your inventory
+# When you examine the gyroscope in the west room,
+# You will get the bad ending.
+
+# You can also get a losing condition by talking to
+# the chair in the north room.
+
 
 # Game Map:
 #
@@ -45,16 +65,14 @@ import re
 # Each Location has:
 # String: name (prints when you visit a room)
 # String: description (prints the first time you visit a room or of you "look" at a room).
-# List: interactions (items in the room you can interact with)
 # Dictionary: connections (keys are Strings that refer to a valid direction a character can move from this Location
 # and the values are reference variables of the rooms corresponding to those directions.
 # boolean: visited: Initialized to False and changes to True once the player moves to a new room.
 class Location:
     # Constructor for our locations.
-    def __init__(self, name, description, interactions, connections):
+    def __init__(self, name, description, connections):
         self.name = name
         self.description = description
-        self.interactions = interactions
         self.connections = connections
         self.visited = False
 
@@ -77,12 +95,12 @@ class Location:
 # Room Definitions
 # Rooms are created ahead of time with empty values because we need to refer to these objects in their
 # connections dictionary.
-main_room = Location("", "", [], {})
-north_room = Location("", "", [], {})
-south_room = Location("", "", [], {})
-east_room = Location("", "", [], {})
-west_room = Location("", "", [], {})
-secret_room = Location("", "", [], {})
+main_room = Location("", "", {})
+north_room = Location("", "",  {})
+south_room = Location("", "",  {})
+east_room = Location("", "",  {})
+west_room = Location("", "",  {})
+secret_room = Location("", "",  {})
 
 # World Items
 # A dictionary that holds all the items in the world as keys. The values are lists.
@@ -118,7 +136,6 @@ itemTable = {
 
 # Main Room
 main_room.name = "Main Room"
-main_room.interactions = []
 main_room.description = "Lit with a flickering torchlight, the room darkens at the corners. \
 The walls are\nCyclopean stone and painted with moss. \
 Motes of flora drift lightly and your feet\nsettle on soft grass. \
@@ -132,7 +149,6 @@ north_room.description = "The warmth of the room sends shivers down your back,\n
 like settling into a warm bath in winter.\n\
 A fireplace burns to the side, inviting and bright,\n\
 while a grandfather clock creates meditative ticking from a corner." + itemTable["key"][2] + itemTable["chair"][2] + "\nThe only door is to the south.\n"
-north_room.interactions = []
 north_room.connections = {"south": main_room}
 
 # South Room
@@ -142,7 +158,6 @@ A small spring begins near the north and disappears into the far stone wall.\n\
 Worn tables are covered with failed inventions and stagnate chemical devices.\n\
 A rough mosaic colors one wall, forming the shapes of two women sailing through a strange sea.\n\
 Amongst the waves you discover a small socket." + itemTable["book"][2] + "\nThere's a door to the north.\n"
-south_room.interactions = []
 south_room.connections = {"north": main_room}
 
 # East Room
@@ -151,7 +166,6 @@ east_room.description = "Stepping onto a stone floor, you strain to see in the d
 Rows of portraits line the walls, depicting strange, archaic scenes of battle.\n\
 The air is spiced with a sweet perfume that pulls you inward and you fail to resist.\n\
 You collide with a stone table that breaks the hold on your mind." + itemTable["letter"][2] + itemTable["necklace"][2] + "\nA doorway is to the west.\n"
-east_room.interactions = []
 east_room.connections = {"west": main_room}
 
 # West Room
@@ -161,7 +175,6 @@ housing books and strange scientific instruments.\n\
 Pages are scattered on the polished wood floor, the written words no longer legible.\n\
 The far wall is made entirely of glass and an endless night sky rests on the other side.\n\
 In the center of the room is a large device, a gyroscope, rotating slow and steady.\n"
-west_room.interactions = []
 west_room.connections = {"east": main_room}
 
 # Secret Room
@@ -172,9 +185,11 @@ The stream from above falls and clings to one wall, but there is no sound.\n\
 Your footsteps are silent, and shouting creates no sound.\n\
 The doorway you entered from is gone, but you notice a dusty green board beneath your feet.\n\
 It resembles a logic board.\n"
-secret_room.interactions = []
 secret_room.connections = {}
 
+# Ending Scripts.
+# BAD Ending occurs if you examine the gyroscope in the west room and you have the necklace and the tablet
+# OR if you have the necklace, tablet, and logic board
 badEnding = "\nPlacing the pendant and tablet into the panel, you begin to feel vibrations deep below.\n\
 The gyroscope activates, its gimbals increasing in speed as the crystal pendant illuminates.\n\
 You feel a sharp pain in your chest, like a tug on your heart. The room dissolves around you into black.\n\
@@ -190,6 +205,8 @@ Slowly, everything grows dark.\n\
 You achieved the Bad Ending!\n\
 Thank you for playing!\n"
 
+
+# GOOD Ending occurs if you examine the gyroscope in the west room and you have the necklace and the logic board
 goodEnding = "\nPlacing the pendant and logic board into the panel, you begin to feel vibrations deep below.\n\
 The gyroscope activates, its gimbals increasing in speed as the crystal pendant illuminates.\n\
 You feel a sharp pain in your chest, like a tug on your heart. The room dissolves around you into black.\n\
@@ -317,6 +334,7 @@ class Player:
 			print "There is no " + item + " to examine."
                                       # Otherwise, notify the Player that there is no item to examine.
 
+# A special chair that could make you go nutty
 def the_chair():
 	print "\nConcentrating on the chair, you notice a hum.\
 	\nThe sound seems to be coming from the chair itself.\
